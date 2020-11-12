@@ -1,5 +1,5 @@
 <?php
-
+//include "TFormField.php";
 /**
  * Classe "abstraite" qui ne peut pas être instanciée
  *
@@ -12,10 +12,36 @@
  */
 abstract class TFormManager
 {
-
+    public $TFormList = [];
+ /*   protected $TMandatoryFieldList = [];
+    protected $TValidatedFieldType = [
+            "TextArea",
+            "Name",
+            "Tel",
+            "Email",
+            "Address"
+    ];
     /**
      */
-    public function __construct()
-    {}
-}
+  //  abstract protected function InitForm();
+   // abstract protected function ValidateForm();
 
+    public function __construct(array $ArrayParams)
+    {
+        foreach($ArrayParams as $ArrayParam){
+            array_push($this->TFormList, $ArrayParam);
+        }
+        
+    }
+    public function ResetFields(){
+        foreach($this->TFormList as $Lala){
+            $$Lala = "";
+        }
+    }
+    
+  /*  protected function AddField(string $FieldName = "", string $FieldType = "", bool $IsMandatory = false){
+    }
+    protected function DeleteField(string $FieldName = ""){
+
+    }*/
+}

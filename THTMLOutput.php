@@ -16,6 +16,17 @@
  * @version 1.0.0
  */
 trait THTMLOutput
-{
+{   
+    public function CreateForm(){
+        return "<form>";
+    }
+    public function CreateLabel($Label){
+        printf ("<label for=$Label>$Label</label><br>
+                <Input type='text' id=$Label name=$Label>");
+    }
+    public function CreateInput($InputType){
+        
+    }
+
 }
 

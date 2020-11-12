@@ -12,7 +12,8 @@
  *
  * @version 1.0.0
  */
-abstract class TFormField
+
+abstract class TFormField 
 {
 
     protected $Value;
@@ -23,11 +24,17 @@ abstract class TFormField
 
     /**
      */
-    public function __construct($InitialValue = "", $MandatoryValue = false)
+    public function __construct(string $InitialValue = "", bool $MandatoryValue = true)
     {
         $this->RawValue = $InitialValue;
         $this->SetValue($this->RawValue);
         $this->SetIsMandatory($MandatoryValue);
+    }
+    public function __get($property) {
+        return $this->GetValue();
+    }
+    public function __set($name = "Value", $property){
+        $this->SetValue($property);
     }
 
     abstract protected function Validate($ValueToValidate);
@@ -76,20 +83,43 @@ class TTextFormField extends TFormField
 
     /**
      */
-    public function __construct($ValueParam)
+    public function __construct(string $ValueToValidate = "", bool $IsMandatoryValue = false)
     {
-        parent::__construct($ValueParam);
+        parent::__construct($ValueToValidate, $IsMandatoryValue);
         // Here the code of the current constructor
     }
 
     protected function Validate($ValueToValidate)
-    {}
+    {
+        return strval($ValueToValidate);
+    }
 
     protected function Sanitize($ValueToSanitize)
-    {}
+    {
+        return filter_var($ValueToSanitize, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    }
 
     protected function Escape($ValueToEscape)
-    {}
+    {
+        return htmlspecialchars($ValueToEscape);
+    }
+}
+
+class TNameFormField extends TTextFormField
+{
+
+    /**
+     */
+    public function __construct(string $ValueToValidate = "", bool $IsMandatoryValue = false)
+    {
+        parent::__construct($ValueToValidate, $IsMandatoryValue);
+        // Here the code of the current constructor
+    }
+
+    protected function Validate($ValueToValidate)
+    {   parent::Validate($ValueToValidate);
+        return filter_var($ValueToValidate, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z-' ]*$/")));
+    }
 }
 
 /**
@@ -104,20 +134,26 @@ class TEmailFormField extends TFormField
 
     /**
      */
-    public function __construct($ValueParam)
+    public function __construct(string $ValueToValidate = "", bool $IsMandatoryValue = false)
     {
-        parent::__construct($ValueParam);
+        parent::__construct($ValueToValidate, $IsMandatoryValue);
         // Here the code of the current constructor
     }
 
     protected function Validate($ValueToValidate)
-    {}
+    {
+        return filter_var($ValueToValidate, FILTER_VALIDATE_EMAIL);
+    }
 
     protected function Sanitize($ValueToSanitize)
-    {}
+    {       
+        return filter_var($ValueToSanitize, FILTER_SANITIZE_EMAIL);
+    }
 
     protected function Escape($ValueToEscape)
-    {}
+    {
+        return sprintf('%s', htmlspecialchars($ValueToEscape));
+    }
 }
 
 /**
@@ -132,20 +168,26 @@ class TTelFormField extends TFormField
 
     /**
      */
-    public function __construct($ValueParam)
+    public function __construct(string $ValueToValidate = "", bool $IsMandatoryValue = false)
     {
-        parent::__construct($ValueParam);
+        parent::__construct($ValueToValidate, $IsMandatoryValue);
         // Here the code of the current constructor
     }
 
     protected function Validate($ValueToValidate)
-    {}
+    {
+        return filter_var($ValueToValidate, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>'#[0][0-7][- \.?]?([0-9][0-9][- \.?]?){4}$#')));
+    }
 
     protected function Sanitize($ValueToSanitize)
-    {}
+    {
+        return filter_var($ValueToSanitize, FILTER_SANITIZE_STRING);
+    }
 
     protected function Escape($ValueToEscape)
-    {}
+    {
+        return filter_var($ValueToEscape, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    }
 }
 
 /**
@@ -157,21 +199,26 @@ class TTelFormField extends TFormField
  */
 class TTextareaFormField extends TFormField
 {
-
     /**
      */
-    public function __construct($ValueParam)
+    public function __construct(string $ValueToValidate = "", bool $IsMandatoryValue = false)
     {
-        parent::__construct($ValueParam);
+        parent::__construct($ValueToValidate, $IsMandatoryValue);
         // Here the code of the current constructor
     }
 
     protected function Validate($ValueToValidate)
-    {}
+    {
+        return strval($ValueToValidate);
+    }
 
     protected function Sanitize($ValueToSanitize)
-    {}
+    {
+        return filter_var($ValueToSanitize, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    }
 
     protected function Escape($ValueToEscape)
-    {}
+    {
+        return sprintf('%s', htmlspecialchars($ValueToEscape));
+    }
 }

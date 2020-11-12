@@ -22,30 +22,38 @@ class TFormulaireContact extends TFormManager
 {
     use THTMLOutput;
 
-    /* @var TextFormField Champ "Prénom", de type texte */
-    private $Prenom;
-
-    private $Nom;
-
-    private $Email;
-
-    private $Tel;
-
-    private $Sujet;
-
-    private $Message;
 
     /**
      */
-    public function __construct()
+    public function __construct($ArrayParams)
     {
-        $this->Prenom = new TTextFormField("");
-        $this->Nom = new TTextFormField("");
-        $this->Email = new TEmailFormField("");
-        $this->Tel = new TTelFormField("");
-        $this->Sujet = new TTextFormField("");
-        $this->Message = new TTextareaFormField("");
+        parent::__construct($ArrayParams);
+            $TabTemp = [];
+            $Count = 0;
+            foreach ($this->TFormList as $lala){
+                $TabTemp[$Count] = $lala;
+                $Count++;
+                }
+            $this->TFormList = $TabTemp;
+            for ($i = 0; $i< count($this->TFormList); $i++ ){
+                $Monobj = NULL;                
+                switch ($this->TFormList[$i]["Type"]){
+                    case "TextArea" :  $Monobj = New TTextareaFormField("");
+                break;
+                    case "Name": $Monobj = New TNameFormField("");
+                break;
+                    case "Tel": $Monobj = New TTelFormField("");
+                break;
+                    case "Email": $Monobj = New TEmailFormField("");
+                break;
+                    default : $Monobj = New TTextFormField("");
+                break;
+                }
+                $this->TFormList[$i]["obj"] = $Monobj;
+            }
     }
-}
-
-// Si le formulaire est valide, envoyer les infos par mail
+}// Si le formulaire est valide, envoyer les infos par mail
+$lala = new TFormulaireContact([["Etiquette"=>"Message", "Type"=>"TextArea", "Mandatory" => true], ["Etiquette"=>"Telephone", "Type"=>"Tel", "Mandatory" => false]]);
+print '<pre>';
+print_r($lala->TFormList);
+print '</pre>';
